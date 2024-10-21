@@ -12,7 +12,7 @@ import (
 
 type ctxKey string
 
-const Uid ctxKey = "uid"
+const UID ctxKey = "uid"
 
 func Authorize(a authorization.Authorizer, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -24,14 +24,14 @@ func Authorize(a authorization.Authorizer, next http.HandlerFunc) http.HandlerFu
 			return
 		}
 		//jwt header checking
-		userId, err := a.VerifyToken(jwtHeader)
+		userID, err := a.VerifyToken(jwtHeader)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			w.Write([]byte("Access denied"))
 			return
 		}
-		ctx := context.WithValue(r.Context(), Uid, userId)
-		logger.Log.Debug("next user authorized successfully", zap.String("UserId", userId), zap.String("PATH", r.URL.Path))
+		ctx := context.WithValue(r.Context(), UID, userID)
+		logger.Log.Debug("next user authorized successfully", zap.String("UserId", userID), zap.String("PATH", r.URL.Path))
 		next(w, r.WithContext(ctx))
 	}
 }

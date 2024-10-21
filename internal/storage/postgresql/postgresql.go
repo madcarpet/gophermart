@@ -120,10 +120,14 @@ func (s *PsqlStorage) IsLoginFree(ctx context.Context, login string) (bool, erro
 	if loginReqResult.Next() {
 		return false, nil
 	}
+	if loginReqResult.Err() != nil {
+		logger.Log.Error("is login free error - raws iterating error", zap.Error(err))
+		return true, err
+	}
 	return true, nil
 }
 
-func (s *PsqlStorage) GetUserById(ctx context.Context, id string) (*models.User, error) {
+func (s *PsqlStorage) GetUserByID(ctx context.Context, id string) (*models.User, error) {
 	var user models.User
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
@@ -268,6 +272,10 @@ func (s *PsqlStorage) GetOrdersDelayed(ctx context.Context, lim int) ([]models.O
 		}
 		ordersDelayed = append(ordersDelayed, o)
 	}
+	if rows.Err() != nil {
+		logger.Log.Error("get orders delayed error - rows iteration error", zap.Error(err))
+		return nil, err
+	}
 	return ordersDelayed, nil
 }
 
@@ -342,10 +350,14 @@ func (s *PsqlStorage) GetOrders(ctx context.Context, uid string) ([]models.Order
 		}
 		orders = append(orders, o)
 	}
+	if rows.Err() != nil {
+		logger.Log.Error("get orders error - iteration error", zap.Error(err))
+		return nil, err
+	}
 	return orders, nil
 }
 
-func (s *PsqlStorage) GetBalanceByUserId(ctx context.Context, uid string) (*models.UserBalance, error) {
+func (s *PsqlStorage) GetBalanceByUserID(ctx context.Context, uid string) (*models.UserBalance, error) {
 	var userBalance models.UserBalance
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
@@ -416,9 +428,13 @@ func (s *PsqlStorage) GetWithdrawals(ctx context.Context, uid string) ([]models.
 		}
 		withdrawals = append(withdrawals, w)
 	}
+	if rows.Err() != nil {
+		logger.Log.Error("get withdrawals error - iteration error", zap.Error(err))
+		return nil, err
+	}
 	return withdrawals, nil
 }
 
-func (s *PsqlStorage) DbClose() error {
+func (s *PsqlStorage) DBClose() error {
 	return s.connection.Close()
 }

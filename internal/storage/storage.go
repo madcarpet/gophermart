@@ -8,7 +8,7 @@ import (
 
 type Storage interface {
 	InitStorage(ctx context.Context) error
-	DbClose() error
+	DBClose() error
 
 	AddUser(ctx context.Context, user *models.User) error
 	IsLoginFree(ctx context.Context, login string) (bool, error)
@@ -18,7 +18,7 @@ type Storage interface {
 	AddUserBalance(ctx context.Context, balance *models.UserBalance) error
 	UpdateCurrentBalance(ctx context.Context, c float32, uid string) error
 	GetOrders(ctx context.Context, uid string) ([]models.Order, error)
-	GetBalanceByUserId(ctx context.Context, uid string) (*models.UserBalance, error)
+	GetBalanceByUserID(ctx context.Context, uid string) (*models.UserBalance, error)
 	AddWithdrawal(ctx context.Context, withdraw *models.Withdrawals) error
 	GetWithdrawalByOrderNum(ctx context.Context, num string) (*models.Withdrawals, error)
 	GetWithdrawals(ctx context.Context, uid string) ([]models.Withdrawals, error)
