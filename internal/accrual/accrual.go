@@ -48,7 +48,7 @@ func (c *AccrualClient) DealOrders(ctx context.Context, wid int) {
 			logger.Log.Info("accural client worker stopped by ctx", zap.Int("id", wid))
 			return
 		case order := <-c.orderChan:
-			c.ProcessOrder(ctx, order.Number, order.UserId, false)
+			c.ProcessOrder(ctx, order.Number, order.UserID, false)
 		}
 	}
 }
@@ -68,7 +68,7 @@ func (c *AccrualClient) DealOrdersDelayed(ctx context.Context, delay int, lim in
 				logger.Log.Error("accural client worker get delayed orders error", zap.Error(err))
 			}
 			for _, order := range ordersDelayed {
-				orderProcessed := c.ProcessOrder(ctx, order.Number, order.UserId, true)
+				orderProcessed := c.ProcessOrder(ctx, order.Number, order.UserID, true)
 				if orderProcessed {
 					c.storage.DeleteOrderDelayed(ctx, order.Number)
 				}

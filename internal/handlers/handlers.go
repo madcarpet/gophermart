@@ -24,7 +24,7 @@ import (
 func RegisterPostHandler(ctx context.Context, s storage.Storage, a authorization.Authorizer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Content-Type check
-		if appType := r.Header.Get("Content-Type"); appType != constants.CntTypeHeaderJson {
+		if appType := r.Header.Get("Content-Type"); appType != constants.CntTypeHeaderJSON {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong request Content-Type"))
 			return
@@ -48,9 +48,9 @@ func RegisterPostHandler(ctx context.Context, s storage.Storage, a authorization
 			return
 		}
 		//UUID generation
-		userData.Id = uuid.New().String()
-		userBal.Id = uuid.New().String()
-		userBal.UserId = userData.Id
+		userData.ID = uuid.New().String()
+		userBal.ID = uuid.New().String()
+		userBal.UserID = userData.ID
 		//PWD hashing
 		pwdHash := sha256.Sum256([]byte(userData.Password))
 		pwdHashString := hex.EncodeToString(pwdHash[:])
@@ -80,7 +80,7 @@ func RegisterPostHandler(ctx context.Context, s storage.Storage, a authorization
 			return
 		}
 		// Producing token
-		token, err := a.ProduceToken(userData.Id)
+		token, err := a.ProduceToken(userData.ID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Internal Server Error"))
@@ -95,7 +95,7 @@ func RegisterPostHandler(ctx context.Context, s storage.Storage, a authorization
 func LoginPostHandler(ctx context.Context, s storage.Storage, a authorization.Authorizer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Content-Type check
-		if appType := r.Header.Get("Content-Type"); appType != constants.CntTypeHeaderJson {
+		if appType := r.Header.Get("Content-Type"); appType != constants.CntTypeHeaderJSON {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong request Content-Type"))
 			return
@@ -141,7 +141,7 @@ func LoginPostHandler(ctx context.Context, s storage.Storage, a authorization.Au
 			return
 		}
 		// Prodicing token
-		token, err := a.ProduceToken(user.Id)
+		token, err := a.ProduceToken(user.ID)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Internal Server Error"))
@@ -185,7 +185,7 @@ func OrdersGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc {
 			w.Write([]byte("Internal Server Error"))
 			return
 		}
-		w.Header().Set("Content-Type", constants.CntTypeHeaderJson)
+		w.Header().Set("Content-Type", constants.CntTypeHeaderJSON)
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonOrders)
 	}
@@ -250,7 +250,7 @@ func OrdersPostHandler(ctx context.Context, s storage.Storage, ch chan<- *models
 			return
 		}
 		if orderCheckResult != nil {
-			switch orderCheckResult.UserId {
+			switch orderCheckResult.UserID {
 			case userIDStr:
 				w.WriteHeader(http.StatusOK)
 				w.Write([]byte("Order already uploaded"))
@@ -263,7 +263,7 @@ func OrdersPostHandler(ctx context.Context, s storage.Storage, ch chan<- *models
 		}
 		orderTime := time.Now()
 		orderTimeStr := orderTime.Format(time.RFC3339)
-		order := models.Order{Number: orderNum, Status: constants.StatusNewOrder, UserId: userIDStr, UploadedAt: orderTimeStr}
+		order := models.Order{Number: orderNum, Status: constants.StatusNewOrder, UserID: userIDStr, UploadedAt: orderTimeStr}
 		if err = s.AddOrder(ctx, order); err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Internal Server Error"))
@@ -304,7 +304,7 @@ func BalanceGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc 
 			w.Write([]byte("Internal Server Error"))
 			return
 		}
-		w.Header().Set("Content-Type", constants.CntTypeHeaderJson)
+		w.Header().Set("Content-Type", constants.CntTypeHeaderJSON)
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonBalance)
 	}
@@ -313,7 +313,7 @@ func BalanceGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc 
 func WithdrawPostHandler(ctx context.Context, s storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//Content-Type check
-		if appType := r.Header.Get("Content-Type"); appType != constants.CntTypeHeaderJson {
+		if appType := r.Header.Get("Content-Type"); appType != constants.CntTypeHeaderJSON {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Wrong request Content-Type"))
 			return
@@ -414,8 +414,8 @@ func WithdrawPostHandler(ctx context.Context, s storage.Storage) http.HandlerFun
 		}
 
 		//Register withdraw
-		withdraw.Id = uuid.New().String()
-		withdraw.UserId = userIDStr
+		withdraw.ID = uuid.New().String()
+		withdraw.UserID = userIDStr
 		orderTime := time.Now()
 		withdraw.ProcessedAt = orderTime.Format(time.RFC3339)
 		err = s.AddWithdrawal(ctx, &withdraw)
@@ -462,7 +462,7 @@ func WithdrawlsGetHandler(ctx context.Context, s storage.Storage) http.HandlerFu
 			w.Write([]byte("Internal Server Error"))
 			return
 		}
-		w.Header().Set("Content-Type", constants.CntTypeHeaderJson)
+		w.Header().Set("Content-Type", constants.CntTypeHeaderJSON)
 		w.WriteHeader(http.StatusOK)
 		w.Write(jsonWithdrawals)
 	}

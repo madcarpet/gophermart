@@ -1,7 +1,7 @@
 package constants
 
 const (
-	CntTypeHeaderJson     = "application/json"
+	CntTypeHeaderJSON     = "application/json"
 	CntTypeHeaderText     = "text/plain"
 	CookieToken           = "Authorization"
 	StatusNewOrder        = "a1dd6e49-fa1d-42c4-8942-dfd675c7ba12"
