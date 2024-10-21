@@ -156,7 +156,7 @@ func LoginPostHandler(ctx context.Context, s storage.Storage, a authorization.Au
 func OrdersGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//UID after authorization getting
-		userID := r.Context().Value(middlewares.Uid)
+		userID := r.Context().Value(middlewares.UID)
 		userIDStr, ok := userID.(string)
 		if !ok {
 			logger.Log.Error("orders get handler error - getting uuid value from request context failed")
@@ -200,7 +200,7 @@ func OrdersPostHandler(ctx context.Context, s storage.Storage, ch chan<- *models
 			return
 		}
 		//UID after authorization getting
-		userID := r.Context().Value(middlewares.Uid)
+		userID := r.Context().Value(middlewares.UID)
 		userIDStr, ok := userID.(string)
 		if !ok {
 			logger.Log.Error("orders post handler error - getting uuid value from request context failed")
@@ -280,7 +280,7 @@ func OrdersPostHandler(ctx context.Context, s storage.Storage, ch chan<- *models
 func BalanceGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//UID after authorization getting
-		userID := r.Context().Value(middlewares.Uid)
+		userID := r.Context().Value(middlewares.UID)
 		userIDStr, ok := userID.(string)
 		if !ok {
 			logger.Log.Error("balance get handler error - getting uuid value from request context failed")
@@ -289,7 +289,7 @@ func BalanceGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc 
 			return
 		}
 		// get balance from storage
-		balance, err := s.GetBalanceByUserId(ctx, userIDStr)
+		balance, err := s.GetBalanceByUserID(ctx, userIDStr)
 		if err != nil {
 			logger.Log.Error("balance get handler error - getting orders grom database failed")
 			w.WriteHeader(http.StatusInternalServerError)
@@ -319,7 +319,7 @@ func WithdrawPostHandler(ctx context.Context, s storage.Storage) http.HandlerFun
 			return
 		}
 		//UID after authorization getting
-		userID := r.Context().Value(middlewares.Uid)
+		userID := r.Context().Value(middlewares.UID)
 		userIDStr, ok := userID.(string)
 		if !ok {
 			logger.Log.Error("withdraw handler error - getting uuid value from request context failed")
@@ -390,7 +390,7 @@ func WithdrawPostHandler(ctx context.Context, s storage.Storage) http.HandlerFun
 			return
 		}
 		// Get user balance
-		balance, err := s.GetBalanceByUserId(ctx, userIDStr)
+		balance, err := s.GetBalanceByUserID(ctx, userIDStr)
 		if err != nil {
 			logger.Log.Error("withdraw handler error - get user balance error", zap.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
@@ -433,7 +433,7 @@ func WithdrawPostHandler(ctx context.Context, s storage.Storage) http.HandlerFun
 func WithdrawlsGetHandler(ctx context.Context, s storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//UID after authorization getting
-		userID := r.Context().Value(middlewares.Uid)
+		userID := r.Context().Value(middlewares.UID)
 		userIDStr, ok := userID.(string)
 		if !ok {
 			logger.Log.Error("withdrawals get handler error - getting uuid value from request context failed")

@@ -78,7 +78,7 @@ func (c *AccrualClient) DealOrdersDelayed(ctx context.Context, delay int, lim in
 }
 
 func (c *AccrualClient) ProcessOrder(ctx context.Context, num string, uid string, delayed bool) (processed bool) {
-	fullUrl := c.url + num
+	fullURL := c.url + num
 	processed = false
 	saveToDB := true
 	func(bool) {
@@ -86,7 +86,7 @@ func (c *AccrualClient) ProcessOrder(ctx context.Context, num string, uid string
 		for i := 1; i <= c.repeats; i++ {
 			logger.Log.Debug("attepmt get accrual", zap.String("attempt", strconv.Itoa(i)), zap.String("order", num))
 			//Send request
-			r, err := http.Get(fullUrl)
+			r, err := http.Get(fullURL)
 			//If error repeat
 			if err != nil {
 				logger.Log.Error("get request to accrual failed", zap.String("order", num), zap.Error(err))
@@ -166,7 +166,7 @@ func (c *AccrualClient) ProcessOrder(ctx context.Context, num string, uid string
 						logger.Log.Error("change accrual order error", zap.String("order", num), zap.Error(err))
 						return
 					}
-					curBalance, err := c.storage.GetBalanceByUserId(ctx, uid)
+					curBalance, err := c.storage.GetBalanceByUserID(ctx, uid)
 					if err != nil {
 						//If error generate error log
 						logger.Log.Error("get balance error", zap.String("order", num), zap.Error(err))

@@ -67,7 +67,7 @@ func (a *App) Start(ctx context.Context) error {
 
 	// TODO переделать на получение из конфига
 	authorizer := jwt.NewJwtTokenizer(a.config.TokenKey, time.Duration(a.config.TokenTimeout)*time.Hour)
-	router := handlers.NewHttpRouter(a.storage, authorizer, orderChan)
+	router := handlers.NewHTTPRouter(a.storage, authorizer, orderChan)
 
 	err = router.RouterInit(ctx)
 	if err != nil {
@@ -83,7 +83,7 @@ func (a *App) Start(ctx context.Context) error {
 func (a *App) Stop(cancel context.CancelFunc) {
 	logger.Log.Debug("Syncing logger")
 	logger.Log.Sync()
-	a.storage.DbClose()
+	a.storage.DBClose()
 	cancel()
 	//wait for logging from workers
 	time.Sleep(time.Second * 1)

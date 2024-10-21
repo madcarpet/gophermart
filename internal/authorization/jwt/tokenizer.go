@@ -16,7 +16,7 @@ type jwtTokenizer struct {
 
 type Claims struct {
 	jwt.RegisteredClaims
-	UserId string
+	UserID string
 }
 
 func NewJwtTokenizer(key string, etime time.Duration) *jwtTokenizer {
@@ -30,7 +30,7 @@ func (t *jwtTokenizer) ProduceToken(id string) (string, error) {
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(t.expirationTime)),
 		},
-		UserId: uid,
+		UserID: uid,
 	})
 	tokenString, err := token.SignedString([]byte(t.secretKey))
 	if err != nil {
@@ -59,5 +59,5 @@ func (t *jwtTokenizer) VerifyToken(ts string) (string, error) {
 		logger.Log.Error("token is invalid")
 		return "", fmt.Errorf("token %s is invalid", ts)
 	}
-	return claims.UserId, nil
+	return claims.UserID, nil
 }

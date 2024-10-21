@@ -13,19 +13,19 @@ import (
 	"github.com/madcarpet/gophermart/internal/storage"
 )
 
-type HttpRouter struct {
+type HTTPRouter struct {
 	mux           *chi.Mux
 	storage       storage.Storage
 	authorizer    authorization.Authorizer
 	ordersChannel chan<- *models.Order
 }
 
-func NewHttpRouter(s storage.Storage, a authorization.Authorizer, ch chan<- *models.Order) *HttpRouter {
+func NewHTTPRouter(s storage.Storage, a authorization.Authorizer, ch chan<- *models.Order) *HTTPRouter {
 	r := chi.NewRouter()
-	return &HttpRouter{mux: r, storage: s, authorizer: a, ordersChannel: ch}
+	return &HTTPRouter{mux: r, storage: s, authorizer: a, ordersChannel: ch}
 }
 
-func (r *HttpRouter) RouterInit(ctx context.Context) error {
+func (r *HTTPRouter) RouterInit(ctx context.Context) error {
 	storage := r.storage
 	authorizer := r.authorizer
 	ordersChannel := r.ordersChannel
@@ -53,7 +53,7 @@ func (r *HttpRouter) RouterInit(ctx context.Context) error {
 	return nil
 }
 
-func (r *HttpRouter) StartRouter(ra string) error {
+func (r *HTTPRouter) StartRouter(ra string) error {
 	logger.Log.Info("Http Router starting")
 	err := http.ListenAndServe(ra, r.mux)
 	if err != nil {
