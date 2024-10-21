@@ -1,6 +1,6 @@
 module github.com/madcarpet/gophermart
 
-go 1.23.2
+go 1.22.7
 
 require (
 	github.com/caarlos0/env v3.5.0+incompatible
