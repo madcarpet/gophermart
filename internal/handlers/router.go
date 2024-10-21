@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"net/http"
+	"strings"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -55,6 +56,7 @@ func (r *HTTPRouter) RouterInit(ctx context.Context) error {
 
 func (r *HTTPRouter) StartRouter(ra string) error {
 	logger.Log.Info("Http Router starting")
+	ra = strings.TrimPrefix(ra, "http://")
 	err := http.ListenAndServe(ra, r.mux)
 	if err != nil {
 		return err
