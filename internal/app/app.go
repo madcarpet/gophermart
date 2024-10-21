@@ -30,7 +30,7 @@ func (a *App) Start(ctx context.Context) error {
 	logger.LoggerInit(a.config.LogLevel)
 	logger.Log.Info("Starting application",
 		zap.String("run_address", a.config.RunAddress),
-		zap.String("database_uri", a.config.DatabaseUri),
+		zap.String("database_uri", a.config.DatabaseURI),
 		zap.String("accural_system_address", a.config.AccrualSystemAddress),
 		zap.String("log_level", a.config.LogLevel),
 		zap.String("token_key", a.config.TokenKey),
@@ -43,7 +43,7 @@ func (a *App) Start(ctx context.Context) error {
 		zap.Int("accural_req_repeats", a.config.AccrualRequestRepeats),
 	)
 
-	a.storage = postgresql.NewPsqlStorage(a.config.DatabaseUri)
+	a.storage = postgresql.NewPsqlStorage(a.config.DatabaseURI)
 
 	err := a.storage.InitStorage(ctx)
 	if err != nil {

@@ -1,7 +1,7 @@
 package models
 
 type User struct {
-	Id       string
+	ID       string
 	Login    string `json:"login"`
 	Password string `json:"password"`
 }
@@ -9,14 +9,14 @@ type User struct {
 type Order struct {
 	Number     string  `json:"number"`
 	Status     string  `json:"status"`
-	UserId     string  `json:"-"`
+	UserID     string  `json:"-"`
 	Accrual    float32 `json:"accrual,omitempty"`
 	UploadedAt string  `json:"uploaded_at"`
 }
 
 type OrderDelayed struct {
 	Number string
-	UserId string
+	UserID string
 }
 
 type AccrualOrder struct {
@@ -26,15 +26,15 @@ type AccrualOrder struct {
 }
 
 type UserBalance struct {
-	Id        string  `json:"-"`
-	UserId    string  `json:"-"`
+	ID        string  `json:"-"`
+	UserID    string  `json:"-"`
 	Current   float32 `json:"current"`
 	Withdrawn float32 `json:"withdrawn"`
 }
 
 type Withdrawals struct {
-	Id          string  `json:"-"`
-	UserId      string  `json:"-"`
+	ID          string  `json:"-"`
+	UserID      string  `json:"-"`
 	OrderNumber string  `json:"order"`
 	Sum         float32 `json:"sum"`
 	ProcessedAt string  `json:"processed_at"`

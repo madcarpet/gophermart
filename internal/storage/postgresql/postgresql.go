@@ -97,7 +97,7 @@ func (s *PsqlStorage) AddUser(ctx context.Context, user *models.User) error {
 	}
 	_, err = tx.ExecContext(ctx,
 		"INSERT INTO USERS (id,username,pwdhash) VALUES($1,$2,$3)",
-		user.Id, user.Login, user.Password)
+		user.ID, user.Login, user.Password)
 	if err != nil {
 		tx.Rollback()
 		logger.Log.Error("add user error - db inserting failed", zap.Error(err))
@@ -133,7 +133,7 @@ func (s *PsqlStorage) GetUserByID(ctx context.Context, id string) (*models.User,
 	defer cancel()
 	userReqResult := s.connection.QueryRowContext(ctx,
 		"SELECT * FROM USERS WHERE id = $1", id)
-	err := userReqResult.Scan(&user.Id, &user.Login, &user.Password)
+	err := userReqResult.Scan(&user.ID, &user.Login, &user.Password)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -150,7 +150,7 @@ func (s *PsqlStorage) GetUserByLogin(ctx context.Context, login string) (*models
 	defer cancel()
 	userReqResult := s.connection.QueryRowContext(ctx,
 		"SELECT * FROM USERS WHERE username = $1", login)
-	err := userReqResult.Scan(&user.Id, &user.Login, &user.Password)
+	err := userReqResult.Scan(&user.ID, &user.Login, &user.Password)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -171,7 +171,7 @@ func (s *PsqlStorage) AddOrder(ctx context.Context, o models.Order) error {
 	}
 	_, err = tx.ExecContext(ctx,
 		"INSERT INTO orders (number,status_id,user_id, accrual,upload_at) VALUES($1,$2,$3,$4,$5)",
-		o.Number, o.Status, o.UserId, o.Accrual, o.UploadedAt)
+		o.Number, o.Status, o.UserID, o.Accrual, o.UploadedAt)
 	if err != nil {
 		tx.Rollback()
 		logger.Log.Error("add order error - db inserting failed", zap.Error(err))
@@ -205,7 +205,7 @@ func (s *PsqlStorage) GetOrderByNumber(ctx context.Context, num string) (*models
 	defer cancel()
 	orderReqResult := s.connection.QueryRowContext(ctx,
 		"SELECT * FROM orders WHERE number = $1", num)
-	err := orderReqResult.Scan(&order.Number, &order.Status, &order.UserId, &order.Accrual, &order.UploadedAt)
+	err := orderReqResult.Scan(&order.Number, &order.Status, &order.UserID, &order.Accrual, &order.UploadedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -265,7 +265,7 @@ func (s *PsqlStorage) GetOrdersDelayed(ctx context.Context, lim int) ([]models.O
 	defer rows.Close()
 	for rows.Next() {
 		var o models.OrderDelayed
-		err := rows.Scan(&o.Number, &o.UserId)
+		err := rows.Scan(&o.Number, &o.UserID)
 		if err != nil {
 			logger.Log.Error("get orders delayed error - scan error", zap.Error(err))
 			return nil, err
@@ -301,7 +301,7 @@ func (s *PsqlStorage) AddUserBalance(ctx context.Context, balance *models.UserBa
 	}
 	_, err = tx.ExecContext(ctx,
 		"INSERT INTO balance (id,user_id,current,withdrawn) VALUES($1,$2,$3,$4)",
-		balance.Id, balance.UserId, balance.Current, balance.Withdrawn)
+		balance.ID, balance.UserID, balance.Current, balance.Withdrawn)
 	if err != nil {
 		tx.Rollback()
 		logger.Log.Error("add user balance error - db inserting failed", zap.Error(err))
@@ -343,7 +343,7 @@ func (s *PsqlStorage) GetOrders(ctx context.Context, uid string) ([]models.Order
 	defer rows.Close()
 	for rows.Next() {
 		var o models.Order
-		err := rows.Scan(&o.Number, &o.Status, &o.UserId, &o.Accrual, &o.UploadedAt)
+		err := rows.Scan(&o.Number, &o.Status, &o.UserID, &o.Accrual, &o.UploadedAt)
 		if err != nil {
 			logger.Log.Error("get orders error - scan error", zap.Error(err))
 			return nil, err
@@ -363,7 +363,7 @@ func (s *PsqlStorage) GetBalanceByUserID(ctx context.Context, uid string) (*mode
 	defer cancel()
 	balanceReqResult := s.connection.QueryRowContext(ctx,
 		"SELECT * FROM balance WHERE user_id = $1", uid)
-	err := balanceReqResult.Scan(&userBalance.Id, &userBalance.UserId, &userBalance.Current, &userBalance.Withdrawn)
+	err := balanceReqResult.Scan(&userBalance.ID, &userBalance.UserID, &userBalance.Current, &userBalance.Withdrawn)
 	if err != nil {
 		logger.Log.Error("get balance by user id error - db row scan error", zap.Error(err))
 		return nil, err
@@ -381,7 +381,7 @@ func (s *PsqlStorage) AddWithdrawal(ctx context.Context, withdraw *models.Withdr
 	}
 	_, err = tx.ExecContext(ctx,
 		"INSERT INTO withdrawals (id,user_id,order_num,summ,processed_at) VALUES($1,$2,$3,$4,$5)",
-		withdraw.Id, withdraw.UserId, withdraw.OrderNumber, withdraw.Sum, withdraw.ProcessedAt)
+		withdraw.ID, withdraw.UserID, withdraw.OrderNumber, withdraw.Sum, withdraw.ProcessedAt)
 	if err != nil {
 		tx.Rollback()
 		logger.Log.Error("add withdrawal error - db inserting failed", zap.Error(err))
@@ -396,7 +396,7 @@ func (s *PsqlStorage) GetWithdrawalByOrderNum(ctx context.Context, num string) (
 	defer cancel()
 	orderReqResult := s.connection.QueryRowContext(ctx,
 		"SELECT * FROM withdrawals WHERE order_num = $1", num)
-	err := orderReqResult.Scan(&withdrawal.Id, &withdrawal.UserId, &withdrawal.OrderNumber, &withdrawal.Sum, &withdrawal.ProcessedAt)
+	err := orderReqResult.Scan(&withdrawal.ID, &withdrawal.UserID, &withdrawal.OrderNumber, &withdrawal.Sum, &withdrawal.ProcessedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -421,7 +421,7 @@ func (s *PsqlStorage) GetWithdrawals(ctx context.Context, uid string) ([]models.
 	defer rows.Close()
 	for rows.Next() {
 		var w models.Withdrawals
-		err := rows.Scan(&w.Id, &w.UserId, &w.OrderNumber, &w.Sum, &w.ProcessedAt)
+		err := rows.Scan(&w.ID, &w.UserID, &w.OrderNumber, &w.Sum, &w.ProcessedAt)
 		if err != nil {
 			logger.Log.Error("get withdrawals error - scan error", zap.Error(err))
 			return nil, err
