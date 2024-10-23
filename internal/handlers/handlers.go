@@ -405,9 +405,17 @@ func WithdrawPostHandler(ctx context.Context, s storage.Storage) http.HandlerFun
 		}
 		//Update balance
 		newBalance := balance.Current - withdraw.Sum
+		newWithdrawn := balance.Withdrawn + withdraw.Sum
 		err = s.UpdateCurrentBalance(ctx, newBalance, userIDStr)
 		if err != nil {
 			logger.Log.Error("withdraw handler error - update balance error", zap.Error(err))
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte("Internal Server Error"))
+			return
+		}
+		err = s.UpdateBalanceWithdrawal(ctx, newWithdrawn, userIDStr)
+		if err != nil {
+			logger.Log.Error("withdraw handler error - update withdrawal error", zap.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("Internal Server Error"))
 			return

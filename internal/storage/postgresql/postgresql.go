@@ -328,6 +328,24 @@ func (s *PsqlStorage) UpdateCurrentBalance(ctx context.Context, c float32, uid s
 	return tx.Commit()
 }
 
+func (s *PsqlStorage) UpdateBalanceWithdrawal(ctx context.Context, w float32, uid string) error {
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
+	tx, err := s.connection.Begin()
+	if err != nil {
+		logger.Log.Error("update balance withdrawn- transaction open failed", zap.Error(err))
+		return err
+	}
+	_, err = tx.ExecContext(ctx,
+		"UPDATE balance SET withdrawn = $1 WHERE user_id = $2", w, uid)
+	if err != nil {
+		tx.Rollback()
+		logger.Log.Error("update balance withdrawn - db updating failed", zap.Error(err))
+		return err
+	}
+	return tx.Commit()
+}
+
 func (s *PsqlStorage) GetOrders(ctx context.Context, uid string) ([]models.Order, error) {
 	orders := []models.Order{}
 	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)

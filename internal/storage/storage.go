@@ -22,6 +22,7 @@ type Storage interface {
 	AddWithdrawal(ctx context.Context, withdraw *models.Withdrawals) error
 	GetWithdrawalByOrderNum(ctx context.Context, num string) (*models.Withdrawals, error)
 	GetWithdrawals(ctx context.Context, uid string) ([]models.Withdrawals, error)
+	UpdateBalanceWithdrawal(ctx context.Context, w float32, uid string) error
 
 	AddOrderDelayed(ctx context.Context, num string, uid string) error
 	GetOrdersDelayed(ctx context.Context, lim int) ([]models.OrderDelayed, error)
