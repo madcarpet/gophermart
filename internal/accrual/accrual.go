@@ -3,6 +3,7 @@ package accrual
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -119,6 +120,8 @@ func (c *AccrualClient) ProcessOrder(ctx context.Context, num string, uid string
 					logger.Log.Error("response body reading failed", zap.String("order", num), zap.Error(err))
 					continue
 				}
+				// TODO убрать
+				fmt.Println(string(respBody))
 				//unmarshal body
 				var orderInfo models.AccrualOrder
 				err = json.Unmarshal(respBody, &orderInfo)
