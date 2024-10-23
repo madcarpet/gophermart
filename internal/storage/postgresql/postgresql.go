@@ -21,7 +21,7 @@ func dbMigrate(db *sql.DB) error {
 		logger.Log.Error("db driver error on migration", zap.Error(err))
 		return err
 	}
-	m, err := migrate.NewWithDatabaseInstance("file://../../db/migrations", "postgres", driver)
+	m, err := migrate.NewWithDatabaseInstance("file://db/migrations", "postgres", driver)
 	if err != nil {
 		logger.Log.Error("migration instance creation error on migration", zap.Error(err))
 		return err
