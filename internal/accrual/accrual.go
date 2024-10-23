@@ -120,7 +120,7 @@ func (c *AccrualClient) ProcessOrder(ctx context.Context, num string, uid string
 					logger.Log.Error("response body reading failed", zap.String("order", num), zap.Error(err))
 					continue
 				}
-				// TODO убрать
+				fmt.Println(r.StatusCode)
 				fmt.Println(string(respBody))
 				//unmarshal body
 				var orderInfo models.AccrualOrder
