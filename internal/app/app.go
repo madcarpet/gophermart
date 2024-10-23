@@ -16,8 +16,9 @@ import (
 )
 
 type App struct {
-	config  config.Config
-	storage storage.Storage
+	config       config.Config
+	storage      storage.Storage
+	closeStorage bool
 }
 
 // NewApp creates a new App instance with the given config
@@ -44,11 +45,13 @@ func (a *App) Start(ctx context.Context) error {
 	)
 
 	a.storage = postgresql.NewPsqlStorage(a.config.DatabaseURI)
+	a.closeStorage = true
 
-	// err := a.storage.InitStorage(ctx)
-	// if err != nil {
-	// 	return err
-	// }
+	err := a.storage.InitStorage(ctx)
+	if err != nil {
+		logger.Log.Error("storage init failed")
+		a.closeStorage = false
+	}
 
 	//make chan for transferring orders
 	orderChan := make(chan *models.Order, a.config.OrdersQueueSize)
@@ -69,7 +72,7 @@ func (a *App) Start(ctx context.Context) error {
 	authorizer := jwt.NewJwtTokenizer(a.config.TokenKey, time.Duration(a.config.TokenTimeout)*time.Hour)
 	router := handlers.NewHTTPRouter(a.storage, authorizer, orderChan)
 
-	err := router.RouterInit(ctx)
+	err = router.RouterInit(ctx)
 	if err != nil {
 		return err
 	}
@@ -83,7 +86,9 @@ func (a *App) Start(ctx context.Context) error {
 func (a *App) Stop(cancel context.CancelFunc) {
 	logger.Log.Debug("Syncing logger")
 	logger.Log.Sync()
-	a.storage.DBClose()
+	if a.closeStorage {
+		a.storage.DBClose()
+	}
 	cancel()
 	//wait for logging from workers
 	time.Sleep(time.Second * 1)
