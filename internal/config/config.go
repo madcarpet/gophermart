@@ -30,7 +30,7 @@ func InitConfig() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	//flag parameters
 	flag.StringVar(&cliConfig.RunAddress, "a", "localhost:80", "server IP address and TCP port (env:RUN_ADDRESS)")
 	flag.StringVar(&cliConfig.DatabaseURI, "d", "postgresql://gopher:gopher@localhost:5432/gophermart", "database URI (env:DATABASE_URI)")
 	flag.StringVar(&cliConfig.AccrualSystemAddress, "r", "http://localhost:8080/api/orders/", "accrual system IP address (env:ACCURAL_SYSTEM_ADDRESS)")
