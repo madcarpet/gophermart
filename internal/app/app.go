@@ -45,10 +45,10 @@ func (a *App) Start(ctx context.Context) error {
 
 	a.storage = postgresql.NewPsqlStorage(a.config.DatabaseURI)
 
-	err := a.storage.InitStorage(ctx)
-	if err != nil {
-		return err
-	}
+	// err := a.storage.InitStorage(ctx)
+	// if err != nil {
+	// 	return err
+	// }
 
 	//make chan for transferring orders
 	orderChan := make(chan *models.Order, a.config.OrdersQueueSize)
@@ -69,7 +69,7 @@ func (a *App) Start(ctx context.Context) error {
 	authorizer := jwt.NewJwtTokenizer(a.config.TokenKey, time.Duration(a.config.TokenTimeout)*time.Hour)
 	router := handlers.NewHTTPRouter(a.storage, authorizer, orderChan)
 
-	err = router.RouterInit(ctx)
+	err := router.RouterInit(ctx)
 	if err != nil {
 		return err
 	}

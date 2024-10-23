@@ -31,9 +31,9 @@ func InitConfig() (*Config, error) {
 		return nil, err
 	}
 
-	flag.StringVar(&cliConfig.RunAddress, "a", "", "server IP address and TCP port (env:RUN_ADDRESS)")
-	flag.StringVar(&cliConfig.DatabaseURI, "d", "", "database URI (env:DATABASE_URI)")
-	flag.StringVar(&cliConfig.AccrualSystemAddress, "r", "", "accrual system IP address (env:ACCURAL_SYSTEM_ADDRESS)")
+	flag.StringVar(&cliConfig.RunAddress, "a", "localhost:8080", "server IP address and TCP port (env:RUN_ADDRESS)")
+	flag.StringVar(&cliConfig.DatabaseURI, "d", "postgresql://gopher:gopher@localhost:5432/gophermart", "database URI (env:DATABASE_URI)")
+	flag.StringVar(&cliConfig.AccrualSystemAddress, "r", "http://localhost:8080/api/orders/", "accrual system IP address (env:ACCURAL_SYSTEM_ADDRESS)")
 	flag.StringVar(&cliConfig.LogLevel, "l", "info", "logging level debug|info|warn|error (env:LOG_LEVEL)")
 	flag.StringVar(&cliConfig.TokenKey, "k", "secretkey", "token secret key (env:TOKEN_KEY)")
 	flag.IntVar(&cliConfig.TokenTimeout, "t", 3, "token timeout in hours (env:TOKEN_TIMEOUT)")
@@ -45,25 +45,15 @@ func InitConfig() (*Config, error) {
 	flag.IntVar(&cliConfig.AccrualRequestRepeats, "repeat", 3, "accrual system client request repeat times (env:ACCURAL_REQ_REPEATS)")
 	flag.Parse()
 
-	if cliConfig.RunAddress != "" {
+	if config.RunAddress == "" {
 		config.RunAddress = cliConfig.RunAddress
 	}
-	if cliConfig.DatabaseURI != "" {
+	if config.DatabaseURI == "" {
 		config.DatabaseURI = cliConfig.DatabaseURI
 	}
-	if cliConfig.AccrualSystemAddress != "" {
+	if config.AccrualSystemAddress == "" {
 		config.AccrualSystemAddress = cliConfig.AccrualSystemAddress
 	}
-
-	// if config.RunAddress == "" {
-	// 	config.RunAddress = cliConfig.RunAddress
-	// }
-	// if config.DatabaseURI == "" {
-	// 	config.DatabaseURI = cliConfig.DatabaseURI
-	// }
-	// if config.AccrualSystemAddress == "" {
-	// 	config.AccrualSystemAddress = cliConfig.AccrualSystemAddress
-	// }
 	if config.LogLevel == "" {
 		config.LogLevel = cliConfig.LogLevel
 	}
