@@ -40,7 +40,7 @@ func InitConfig() (*Config, error) {
 	flag.IntVar(&cliConfig.OrdersQueueSize, "q", 20, "accrual system client orders queue size (env:ORDERS_QUEUE_SIZE)")
 	flag.IntVar(&cliConfig.AccrualWorkers, "aw", 3, "accrual system client workers number (env:ACCURAL_WORKERS)")
 	flag.IntVar(&cliConfig.AccrualDelayedWorkers, "adw", 1, "accrual system client workers for delayed ordersnumber (env:ACCURAL_DELAYED_WORKERS)")
-	flag.IntVar(&cliConfig.AccrualDelay, "dt", 10, "accrual system client delayed orders processing interval time in seconds (env:ACCURAL_DELAY)")
+	flag.IntVar(&cliConfig.AccrualDelay, "dt", 2, "accrual system client delayed orders processing interval time in seconds (env:ACCURAL_DELAY)")
 	flag.IntVar(&cliConfig.AccrualDelayedBatch, "dbs", 50, "accrual system client delayed orders processing batch size (env:ACCURAL_DELAYED_BATCH)")
 	flag.IntVar(&cliConfig.AccrualRequestRepeats, "repeat", 3, "accrual system client request repeat times (env:ACCURAL_REQ_REPEATS)")
 	flag.Parse()
